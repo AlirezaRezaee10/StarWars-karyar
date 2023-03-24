@@ -29,35 +29,27 @@ export default function Home() {
     } else if (pageId > 9) {
         console.log("WTF!!!!!")
     }
+
     useEffect(() => {
-        const data = JSON.parse(getSavedData(currentPage))
         async function fetchData() {
-            if (data === 0) {
-                try {
-                    console.log(data)
-                    // data = await enhancedFetchTest(PEOPLE_API_URL + '?page=' + currentPage)
-                    const res = await axios.get(`${PEOPLE_API_URL}?page=${currentPage}`)
-                    data = res.data
-                    console.log(data)
-                    setPosts(data.results)
-                    setPostsCount(data.count)
-                    setPeopleId((currentPage * 10) - 9)
-                    setLoading(true)
-                    saveData(currentPage, data)
-                } catch (err) {
-                    setHasError(true)
-                } finally {
-                    setLoading(false)
-                }
-                console.log(data)
-            } else {
-                setPosts(data.results)
-                setPostsCount(data.count)
-                setPeopleId((currentPage * 10) - 9)
-                setLoading(true)
-        }}
-            fetchData()
-    }, [currentPage])
+            let data = JSON.parse(getSavedData(currentPage));
+            if (!data) {
+              try {
+                const response = await axios.get(`${PEOPLE_API_URL}?page=${currentPage}`);
+                data = response.data;
+                saveData(currentPage, data);
+              } catch (err) {
+                setHasError(true);
+              }
+            }
+            setPosts(data.results);
+            setPostsCount(data.count);
+            setPeopleId((currentPage * 10) - 9);
+            setLoading(false);
+          }
+      
+          fetchData();
+      }, [currentPage]);
 
     const paginate = pageNumber => {
         setCurrentPage(pageNumber)

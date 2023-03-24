@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import { characterDetails } from '../PostRender'
 import { enhancedFetchTest } from '../../services/http/http'
+import axios from 'axios'
 import { getSavedData, saveData } from '../../services/http/Storage'
 
 const PEOPLE_API_URL = "https://swapi.dev/api/people/"
@@ -9,26 +10,37 @@ const PLANETS_API_URL = "https://swapi.dev/api/planets/"
 
 export default function Characters() {
   const { id } = useParams()
-  const [details, setDetails] = useState([getSavedData(id)])
+  const [details, setDetails] = useState([])
   const [loading, setLoading] = useState(true)
   const [hasError, setHasError] = useState(false)
 
 
   useEffect(() => {
-    if (details != null){
-      return
-    }
+    // async function fetchData() {
+    //   try {
+    //     const data = await enhancedFetchTest(PEOPLE_API_URL + id)
+    //     setDetails(data)
+    //     setLoading(true)
+    //     saveData(id, details)
+    //   } catch (err) {
+    //     setHasError(true)
+    //   } finally {
+    //     setLoading(false)
+    //   }
+    // }
     async function fetchData() {
-      try {
-        const data = await enhancedFetchTest(PEOPLE_API_URL + id)
-        setDetails(data)
-        setLoading(true)
-        saveData(id, details)
-      } catch (err) {
-        setHasError(true)
-      } finally {
-        setLoading(false)
+      let data = JSON.parse(getSavedData(`character${id}`));
+      if (!data) {
+        try {
+          const response = await axios.get(PEOPLE_API_URL + id);
+          data = response.data;
+          saveData(`character${id}`, data);
+        } catch (err) {
+          setHasError(true);
+        }
       }
+      setDetails(data)
+      setLoading(false);
     }
     fetchData()
   }, [])
