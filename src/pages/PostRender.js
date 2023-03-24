@@ -14,7 +14,6 @@ export function renderPosts(data, loading, error, peopleId) {
         )
     }
     if (error) {
-        console.log(data)
         return (
             <div>
                 <p>ERROR...!!!</p>
@@ -39,6 +38,7 @@ export function renderPosts(data, loading, error, peopleId) {
 }
 
 export function characterDetails(data, loading, error) {
+    const films = data.films
     if (loading) {
         return (
             <div className="d-flex justify-content-center align-items-center">
@@ -57,10 +57,11 @@ export function characterDetails(data, loading, error) {
         )
     }
     let i=0
-    const planet = data.films
-    for (i in planet){
-        console.log(planet[i])
+    // const planet = data.films
+    for (i in films){
+        console.log(films[i])
     }
+    // planet.forEach((item) => console.log(item));
     return (
         <>
             <div className="top w-100 bg-light m-1 p-2 row justify-content-center">
@@ -106,7 +107,7 @@ export function characterDetails(data, loading, error) {
             </div>
             <div className="bottom w-100 m-1 p-2 bg-light row">
                 <CollapseButton buttonText={'Homeworld'} api={data.homeworld} />
-                <CollapseButton buttonText={'Films'} />
+                <CollapseButton buttonText={'Films'} apiList={films} />
 
             </div>
         </>

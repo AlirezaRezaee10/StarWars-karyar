@@ -1,6 +1,5 @@
 import './style.css';
 
-import EnhancedFetch from '../../services/http'
 import Home from '../../pages/Home'
 
 function App() {
