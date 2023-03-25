@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import Collapse from 'react-bootstrap/Collapse'
 import Button from 'react-bootstrap/Button'
 import { enhancedFetchTest } from '../services/http/http'
+import axios from 'axios'
 
 function CollapseButton({ buttonText, api, apiList }) {
   const [open, setOpen] = useState(false)
@@ -9,16 +10,16 @@ function CollapseButton({ buttonText, api, apiList }) {
   const [planet, setPlanet] = useState([])
   const [loading, setLoading] = useState(true)
   const [hasError, setHasError] = useState(false)
+  const [selectedFilm, setSelectedFilm] = useState(null)
   const noData = `There is No ${buttonText} data!`
-  let i = 0
 
 
-  console.log(apiList)
   async function fetchData(url) {
-    console.log(url)
+    // console.log(url)
     try {
-      const data = await enhancedFetchTest(url)
-      setFilms(item => [...item, data])
+      const data = await axios.get(url)
+      setFilms(item => [...item, data.data])
+      setHasError(false)
       setLoading(true)
     } catch (err) {
       setHasError(true)
@@ -33,6 +34,7 @@ function CollapseButton({ buttonText, api, apiList }) {
         const data = await enhancedFetchTest(api)
         setPlanet(data)
         setLoading(true)
+        setHasError(false)
       } catch (err) {
         setHasError(true)
       } finally {
@@ -43,16 +45,18 @@ function CollapseButton({ buttonText, api, apiList }) {
   }, [])
 
   useEffect(() => {
-    if (0 >= apiList.length) {
+    try {
+      setFilms([])
+      apiList.forEach(item => {
+        fetchData(item)
+      }) 
+    } catch (err) {
       setHasError(true)
+    } finally {
       setLoading(false)
-
-    } else {
-      for (i in apiList) {
-        fetchData(apiList[i])
-      }
     }
   }, [])
+
 
   function collapseContent() {
 
@@ -73,27 +77,13 @@ function CollapseButton({ buttonText, api, apiList }) {
           </div>
         )
       }
-      for (i in films) {
-
-        // setFilms(item => [...item, fetchData(apiList[index])])
-        // if (loading) {
-        //   return (
-        //     <div className="d-flex justify-content-center align-items-center">
-        //       <div className="spinner-border" role="status">
-        //         <span className="visually-hidden">Loading...</span>
-        //       </div>
-        //     </div>
-        //   )
-        // }
-        // if (hasError) {
-        //   return (
-        //     <div>
-        //       <p>ERROR...!!!</p>
-        //     </div>
-        //   )
-        // }
-        return (<p>Hello</p>)
-      }
+      return (
+        <div>
+          {films.map(film => (
+            <button onClick={() =>{setSelectedFilm(film)}} >{film.title}</button>
+          ))}
+        </div>
+      )
       // return (
       //   <>
       //     <div className="p-2 d-flex justify-content-between">
@@ -178,6 +168,8 @@ function CollapseButton({ buttonText, api, apiList }) {
     }
     
   }
+
+
   return (
     <div className='col-6 p-4'>
       <Button
