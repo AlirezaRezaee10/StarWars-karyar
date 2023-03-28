@@ -3,8 +3,9 @@ import Collapse from 'react-bootstrap/Collapse'
 import Button from 'react-bootstrap/Button'
 import { enhancedFetchTest } from '../services/http/http'
 import axios from 'axios'
+import { getSavedData, saveData } from '../services/http/Storage'
 
-function CollapseButton({ buttonText, api, apiList }) {
+function CollapseButton({ buttonText, api}) {
   const [open, setOpen] = useState(false)
   const [films, setFilms] = useState([])
   const [planet, setPlanet] = useState([])
@@ -13,49 +14,35 @@ function CollapseButton({ buttonText, api, apiList }) {
   const [selectedFilm, setSelectedFilm] = useState(null)
   const noData = `There is No ${buttonText} data!`
 
-
+  
   async function fetchData(url) {
-    // console.log(url)
-    try {
-      const data = await axios.get(url)
-      setFilms(item => [...item, data.data])
-      setHasError(false)
-      setLoading(true)
-    } catch (err) {
-      setHasError(true)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  useEffect(() => {
-    async function fetchPlanet() {
+    const id = url.split("/")[4]+url.split("/")[5]
+    let savedData = JSON.parse(getSavedData(id))
+    if (!savedData) {
       try {
-        const data = await enhancedFetchTest(api)
-        setPlanet(data)
-        setLoading(true)
-        setHasError(false)
+        const data = await enhancedFetchTest(url)
+        savedData = data
+        saveData(id, data)
       } catch (err) {
         setHasError(true)
-      } finally {
-        setLoading(false)
       }
     }
-    fetchPlanet()
-  }, [])
-
-  useEffect(() => {
-    try {
-      setFilms([])
-      apiList.forEach(item => {
-        fetchData(item)
-      }) 
-    } catch (err) {
-      setHasError(true)
-    } finally {
-      setLoading(false)
+    if (url.split("/")[4] === 'planets'){
+      setPlanet(savedData)
     }
-  }, [])
+    setFilms(film => [...film, savedData])
+    setLoading(false)
+    setHasError(false)
+  }
+useEffect(() => {
+  if (typeof api === 'string') {
+    fetchData(api)
+  }
+  setFilms([])
+      for (let i = 0; i < api.length; i++){
+        fetchData(api[i])
+      }
+}, [])
 
 
   function collapseContent() {
@@ -77,10 +64,11 @@ function CollapseButton({ buttonText, api, apiList }) {
           </div>
         )
       }
+      let i = 0
       return (
         <div>
           {films.map(film => (
-            <button onClick={() =>{setSelectedFilm(film)}} >{film.title}</button>
+            <button className='btn btn-primary border border-dark' key={i++} onClick={() => { setSelectedFilm(film) }} >{film.title}</button>
           ))}
         </div>
       )
@@ -166,7 +154,7 @@ function CollapseButton({ buttonText, api, apiList }) {
         </>
       )
     }
-    
+
   }
 
 

@@ -23,7 +23,6 @@ export default function Home() {
     const [postsCount, setPostsCount] = useState(2)
     const [peopleId, setPeopleId] = useState(0)
 
-    console.log(posts)
     if (typeof (pageId) !== 'number') {
         setCurrentPage(1)
     } else if (pageId > 9) {
