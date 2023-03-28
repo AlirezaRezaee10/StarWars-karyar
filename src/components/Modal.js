@@ -48,8 +48,7 @@ export default function Modall({ buttonText, api }) {
             return species()
         } else if (buttonText == 'Vehicles') {
             return vehicles()
-        }
-        return starships()
+        } else return starships()
     }
 
     function species() {

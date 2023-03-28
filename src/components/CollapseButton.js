@@ -2,10 +2,9 @@ import React, { useState, useEffect } from 'react'
 import Collapse from 'react-bootstrap/Collapse'
 import Button from 'react-bootstrap/Button'
 import { enhancedFetchTest } from '../services/http/http'
-import axios from 'axios'
 import { getSavedData, saveData } from '../services/http/Storage'
 
-function CollapseButton({ buttonText, api}) {
+function CollapseButton({ buttonText, api }) {
   const [open, setOpen] = useState(false)
   const [films, setFilms] = useState([])
   const [planet, setPlanet] = useState([])
@@ -13,10 +12,10 @@ function CollapseButton({ buttonText, api}) {
   const [hasError, setHasError] = useState(false)
   const [selectedFilm, setSelectedFilm] = useState(null)
   const noData = `There is No ${buttonText} data!`
-
   
+
   async function fetchData(url) {
-    const id = url.split("/")[4]+url.split("/")[5]
+    const id = url.split("/")[4] + url.split("/")[5]
     let savedData = JSON.parse(getSavedData(id))
     if (!savedData) {
       try {
@@ -27,22 +26,23 @@ function CollapseButton({ buttonText, api}) {
         setHasError(true)
       }
     }
-    if (url.split("/")[4] === 'planets'){
+    if (url.split("/")[4] === 'planets') {
       setPlanet(savedData)
     }
     setFilms(film => [...film, savedData])
     setLoading(false)
     setHasError(false)
   }
-useEffect(() => {
-  if (typeof api === 'string') {
-    fetchData(api)
-  }
-  setFilms([])
-      for (let i = 0; i < api.length; i++){
+  useEffect(() => {
+    if (typeof api === 'string') {
+      fetchData(api)
+    } else {
+      setFilms([])
+      for (let i = 0; i < api.length; i++) {
         fetchData(api[i])
       }
-}, [])
+    }
+  }, [])
 
 
   function collapseContent() {

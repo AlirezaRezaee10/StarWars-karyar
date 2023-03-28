@@ -1,14 +1,20 @@
 export function saveData(key, data) {
-  window.localStorage.setItem(key, JSON.stringify(data))
+  const value = JSON.stringify(data)
+  const item = {
+    data : value,
+    expiry: new Date().getTime() + 120000
+  }
+  window.localStorage.setItem(key, JSON.stringify(item))
 }
 
 export function getSavedData(key) {
-  const data = window.localStorage.getItem(key)
-  if (data !== null)
-    return data
-  return 0
-}
-
-export function removeSavedData(key) {
-  window.localStorage.removeItem(key)
+  const now = new Date().getTime()
+  const strData = window.localStorage.getItem(key)
+  if (!strData)
+    return null
+  const item = JSON.parse(strData)
+  if (now > item.expiry){
+    return null
+  }
+  return item.data
 }
