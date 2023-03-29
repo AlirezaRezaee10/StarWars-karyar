@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import Modal from "react-bootstrap/Modal";
 import Button from 'react-bootstrap/Button'
 import { enhancedFetchTest } from '../services/http/http';
+import { saveData, getSavedData } from '../services/http/Storage';
 
 export default function Modall({ buttonText, api }) {
     const [show, setShow] = useState(false);
@@ -16,24 +17,41 @@ export default function Modall({ buttonText, api }) {
     }
 
 
+    async function fetchData(url) {
+        const id = url.split("/")[4] + url.split("/")[5]
+        let savedData = JSON.parse(getSavedData(id))
+        if (!savedData) {
+          try {
+            const data = await enhancedFetchTest(url)
+            savedData = data
+            saveData(id, data)
+          } catch (err) {
+            setHasError(true)
+          }
+        }
+        setDetails(item => [...item, savedData])
+        setLoading(false)
+        setHasError(false)
+      }
+
 
     useEffect(() => {
         let i = 0
         setDetails([])
         if (api.length > 0) {
             for (i in api) {
-                async function fetchData() {
-                    try {
-                        const data = await enhancedFetchTest(api[i])
-                        setDetails(item => [...item, data])
-                        setLoading(true)
-                    } catch (err) {
-                        setHasError(true)
-                    } finally {
-                        setLoading(false)
-                    }
-                }
-                fetchData()
+                // async function fetchData() {
+                //     try {
+                //         const data = await enhancedFetchTest(api[i])
+                //         setDetails(item => [...item, data])
+                //         setLoading(true)
+                //     } catch (err) {
+                //         setHasError(true)
+                //     } finally {
+                //         setLoading(false)
+                //     }
+                // }
+                fetchData(api[i])
             }
         } else {
             setHasError(true)
@@ -69,11 +87,13 @@ export default function Modall({ buttonText, api }) {
             )
         }
 
-        for (let i = 0; i < details.length; i++) {
-            return (
-                <button>{details[i].name}</button>
-            )
-        }
+        return (
+            details.map(item => {
+                return (
+                    <button key={item.url} className='btn btn-danger d-block m-2'>{item.name}</button>
+                );
+            })
+        )
         // return (
         //     <>
         //         <div className="p-2 d-flex justify-content-between border-top border-danger">
@@ -132,11 +152,13 @@ export default function Modall({ buttonText, api }) {
                 </div>
             )
         }
-        for (let i = 0; i < details.length; i++) {
-            return (
-                <button>{details[i].name}</button>
-            )
-        }
+        return (
+            details.map(item => {
+                return (
+                    <button key={item.url} className='btn btn-danger d-block m-2'>{item.name}</button>
+                );
+            })
+        )
         // return (
         //     <>
         //         <div className="p-2 d-flex justify-content-between border-top border-danger">
