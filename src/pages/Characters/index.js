@@ -5,7 +5,6 @@ import { enhancedFetchTest } from '../../services/http/http'
 import { getSavedData, saveData } from '../../services/http/Storage'
 
 const PEOPLE_API_URL = "https://swapi.dev/api/people/"
-const PLANETS_API_URL = "https://swapi.dev/api/planets/"
 
 export default function Characters() {
   const { id } = useParams()

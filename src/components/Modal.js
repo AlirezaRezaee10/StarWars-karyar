@@ -3,6 +3,7 @@ import Modal from "react-bootstrap/Modal";
 import Button from 'react-bootstrap/Button'
 import { enhancedFetchTest } from '../services/http/http';
 import { saveData, getSavedData } from '../services/http/Storage';
+import CollapseButton from './CollapseButton';
 
 export default function Modall({ buttonText, api }) {
     const [show, setShow] = useState(false);
@@ -21,18 +22,21 @@ export default function Modall({ buttonText, api }) {
         const id = url.split("/")[4] + url.split("/")[5]
         let savedData = JSON.parse(getSavedData(id))
         if (!savedData) {
-          try {
-            const data = await enhancedFetchTest(url)
-            savedData = data
-            saveData(id, data)
-          } catch (err) {
-            setHasError(true)
-          }
+            try {
+                const data = await enhancedFetchTest(url)
+                savedData = data
+                saveData(id, data)
+                setDetails(item => [...item, data])
+                setLoading(false)
+                setHasError(false)
+            } catch (err) {
+                setHasError(true)
+            }
         }
         setDetails(item => [...item, savedData])
         setLoading(false)
         setHasError(false)
-      }
+    }
 
 
     useEffect(() => {
@@ -40,17 +44,6 @@ export default function Modall({ buttonText, api }) {
         setDetails([])
         if (api.length > 0) {
             for (i in api) {
-                // async function fetchData() {
-                //     try {
-                //         const data = await enhancedFetchTest(api[i])
-                //         setDetails(item => [...item, data])
-                //         setLoading(true)
-                //     } catch (err) {
-                //         setHasError(true)
-                //     } finally {
-                //         setLoading(false)
-                //     }
-                // }
                 fetchData(api[i])
             }
         } else {
@@ -66,7 +59,9 @@ export default function Modall({ buttonText, api }) {
             return species()
         } else if (buttonText == 'Vehicles') {
             return vehicles()
-        } else return starships()
+        } else if (buttonText == 'Starships') {
+            return starships()
+        } return films()
     }
 
     function species() {
@@ -90,7 +85,7 @@ export default function Modall({ buttonText, api }) {
         return (
             details.map(item => {
                 return (
-                    <button key={item.url} className='btn btn-danger d-block m-2'>{item.name}</button>
+                    <CollapseButton key={item.url} buttonText={item.name} api={item.url} />
                 );
             })
         )
@@ -296,6 +291,41 @@ export default function Modall({ buttonText, api }) {
         //     </>
         // )
     }
+    function films() {
+        return (
+            details.map(film => {
+                return (
+                    <div key={film.episode_id}>
+                        <div className="p-2 d-flex justify-content-between">
+                            <p>Title:</p>
+                            <p>{film.title}</p>
+                        </div>
+                        <div className="p-2 d-flex justify-content-between">
+                            <p>Episode:</p>
+                            <p>{film.episode_id}</p>
+                        </div>
+                        <div className="p-2 d-flex justify-content-between">
+                            <p>Director:</p>
+                            <p>{film.director}</p>
+                        </div>
+                        <div className="p-2 d-flex justify-content-between">
+                            <p>Producer:</p>
+                            <p>{film.producer}</p>
+                        </div>
+                        <div className="p-2 d-flex justify-content-between">
+                            <p>Release Date:</p>
+                            <p>{film.release_date}</p>
+                        </div>
+                        <div className="p-2 d-flex justify-content-between">
+                            <p>Opening Crawl:</p>
+                            <p>{film.opening_crawl}</p>
+                        </div>
+                    </div>
+                );
+            })
+
+        )
+    }
 
     return (
         <div className='p-4 d-block'>
@@ -326,20 +356,3 @@ export default function Modall({ buttonText, api }) {
         </div>
     );
 }
-
-
-
-
-
-
-
-
-
-// function afterClick() {
-//     if (buttonText == 'Species') {
-//         return species()
-//     } else if (buttonText == 'Vehicles') {
-//         return vehicles()
-//     }
-//     return starships()
-// }

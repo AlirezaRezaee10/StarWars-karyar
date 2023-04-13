@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import Collapse from 'react-bootstrap/Collapse'
 import Button from 'react-bootstrap/Button'
+import Modall from './Modal'
 import { enhancedFetchTest } from '../services/http/http'
 import { getSavedData, saveData } from '../services/http/Storage'
 
@@ -10,12 +11,13 @@ function CollapseButton({ buttonText, api }) {
   const [planet, setPlanet] = useState([])
   const [loading, setLoading] = useState(true)
   const [hasError, setHasError] = useState(false)
-  const [selectedFilm, setSelectedFilm] = useState(null)
+  const [type, setType] = useState('')
   const noData = `There is No ${buttonText} data!`
-  
 
   async function fetchData(url) {
-    const id = url.split("/")[4] + url.split("/")[5]
+    const dataType = url.split("/")[4]
+    const id = dataType + url.split("/")[5]
+    setType(dataType)
     let savedData = JSON.parse(getSavedData(id))
     if (!savedData) {
       try {
@@ -26,7 +28,7 @@ function CollapseButton({ buttonText, api }) {
         setHasError(true)
       }
     }
-    if (url.split("/")[4] === 'planets') {
+    if (dataType === 'planets') {
       setPlanet(savedData)
     }
     setFilms(film => [...film, savedData])
@@ -46,8 +48,8 @@ function CollapseButton({ buttonText, api }) {
 
 
   function collapseContent() {
-
-    if (buttonText !== 'Homeworld') {
+    console.log(type)
+    if (type == 'films') {
       if (loading) {
         return (
           <div className="d-flex justify-content-center align-items-center">
@@ -68,35 +70,14 @@ function CollapseButton({ buttonText, api }) {
       return (
         <div>
           {films.map(film => (
-            <button className='btn btn-primary border border-dark' key={i++} onClick={() => { setSelectedFilm(film) }} >{film.title}</button>
+            <Modall key={i++}
+              buttonText={film.title}
+              api={[film.url]}
+              />
           ))}
         </div>
       )
-      // return (
-      //   <>
-      //     <div className="p-2 d-flex justify-content-between">
-      //       <p>Title:</p>
-      //       <p>...</p>
-      //     </div>
-      //     <div className="p-2 d-flex justify-content-between border-top border-danger">
-      //       <p>Episode:</p>
-      //       <p>...</p>
-      //     </div>
-      //     <div className="p-2 d-flex justify-content-between border-top border-danger">
-      //       <p>Director:</p>
-      //       <p>...</p>
-      //     </div>
-      //     <div className="p-2 d-flex justify-content-between border-top border-danger">
-      //       <p>Producer:</p>
-      //       <p>...</p>
-      //     </div>
-      //     <div className="p-2 d-flex justify-content-between border-top border-danger">
-      //       <p>Release Date:</p>
-      //       <p>...</p>
-      //     </div>
-      //   </>
-      // )
-    } else {
+    } else if (type == 'planets') {
       if (loading) {
         return (
           <div className="d-flex justify-content-center align-items-center">
@@ -152,6 +133,63 @@ function CollapseButton({ buttonText, api }) {
             <p>{planet.gravity}</p>
           </div>
         </>
+      )
+    } else if (type == 'species') {
+      if (loading) {
+        return (
+          <div className="d-flex justify-content-center align-items-center">
+            <div className="spinner-border" role="status">
+              <span className="visually-hidden">Loading...</span>
+            </div>
+          </div>
+        )
+      }
+      if (hasError) {
+        return (
+          <div>
+            <p>{noData}</p>
+          </div>
+        )
+      }
+      return (
+          <>
+              <div className="p-2 d-flex justify-content-between border-top border-danger">
+                  <p>Type:</p>
+                  <p>{films.name}</p>
+              </div>
+              <div className="p-2 d-flex justify-content-between border-top border-danger">
+                  <p>Classification:</p>
+                  <p>{films.classification}</p>
+              </div>
+              <div className="p-2 d-flex justify-content-between border-top border-danger">
+                  <p>Designation:</p>
+                  <p>{films.designation}</p>
+              </div>
+              <div className="p-2 d-flex justify-content-between border-top border-danger">
+                  <p>Average Height:</p>
+                  <p>{films.average_height}</p>
+              </div>
+              <div className="p-2 d-flex justify-content-between border-top border-danger">
+                  <p>Skin Color:</p>
+                  <p>{films.skin_colors}</p>
+              </div>
+              <div className="p-2 d-flex justify-content-between border-top border-danger">
+                  <p>Hair Colors:</p>
+                  <p>{films.hair_colors}</p>
+              </div>
+              <div className="p-2 d-flex justify-content-between border-top border-danger">
+                  <p>Eye Colors:</p>
+                  <p>{films.eye_colors}</p>
+              </div>
+              <div className="p-2 d-flex justify-content-between border-top border-danger">
+                  <p>Avg Lifespan:</p>
+                  <p>{films.average_lifespan}</p>
+              </div>
+              <div className="p-2 d-flex justify-content-between border-top border-danger">
+                  <p>Language:</p>
+                  <p>{films.language}</p>
+              </div>
+          </>
       )
     }
 

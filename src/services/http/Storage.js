@@ -2,7 +2,7 @@ export function saveData(key, data) {
   const value = JSON.stringify(data)
   const item = {
     data : value,
-    expiry: new Date().getTime() + 120000
+    expiry: new Date().getTime() + 1200000
   }
   window.localStorage.setItem(key, JSON.stringify(item))
 }

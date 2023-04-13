@@ -57,12 +57,7 @@ export function characterDetails(data, loading, error) {
             </div>
         )
     }
-    let i=0
-    // const planet = data.films
-    // for (i in films){
-        console.log(planet)
-    // }
-    // planet.forEach((item) => console.log(item));
+    
     return (
         <>
             <div className="top w-100 bg-light m-1 p-2 row justify-content-center">

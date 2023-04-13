@@ -9,40 +9,6 @@ export default function Pagination({ postsPerPage, totalPosts, paginate, current
         pageNumbers.push(i);
     }
 
-    // return (
-    //     <nav>
-    //         <ul className='pagination'>
-    //             {pageNumbers.map(number => (
-    //                 <li key={number} className='page-item'>
-    //                     <a onClick={() => paginate(number)} href="!#" className='page-link'>
-    //                         {number}
-    //                     </a>
-    //                 </li>
-    //             ))}
-    //         </ul>
-    //     </nav>
-    // )
-
-
-    // return (
-    //     <nav className='w-100 m-3 d-flex justify-content-center'>
-    //         <ul className="pagination">
-    //             {currentPage > 1 ?
-    //                  <li className="page-item" onClick={() => prevPage(currentPage)}>
-    //                     <a href="#" className="page-link">{"\uFF1C"}</a>
-    //                 </li>
-    //             : ""}
-    //             {pageNumbers.map(num => (
-    //                 <li key={num} className="page-item"><a href="!#" className="page-link" onClick={() => paginate(num)}>{num}</a></li>
-    //             ))}
-    //             {currentPage < pageNumbers[pageNumbers.length - 1] ? 
-    //                 <li className="page-item" onClick={() => nextPage(currentPage)}>
-    //                     <a href="#" className="page-link">{"\uFF1E"}</a>
-    //                 </li>
-    //             : ""}
-    //         </ul>
-    //     </nav>
-    // )
     if (error) {
         return (
             <nav className='w-100 m-3 d-flex justify-content-center'>
@@ -76,10 +42,4 @@ export default function Pagination({ postsPerPage, totalPosts, paginate, current
     )
 }
 
-
-
-
-
-
-    //Then, in App.js, add the following functions above the return:
 

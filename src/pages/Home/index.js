@@ -10,7 +10,6 @@ import { getSavedData, saveData } from '../../services/http/Storage'
 import axios from 'axios'
 
 const PEOPLE_API_URL = "https://swapi.dev/api/people/"
-const PLANETS_API_URL = "https://swapi.dev/api/planets/"
 
 export default function Home() {
     let { pageId } = useParams()
@@ -23,11 +22,6 @@ export default function Home() {
     const [postsCount, setPostsCount] = useState(2)
     const [peopleId, setPeopleId] = useState(0)
 
-    if (typeof (pageId) !== 'number') {
-        setCurrentPage(1)
-    } else if (pageId > 9) {
-        console.log("WTF!!!!!")
-    }
 
     useEffect(() => {
         async function fetchData() {
@@ -39,6 +33,7 @@ export default function Home() {
                 saveData(currentPage, data);
               } catch (err) {
                 setHasError(true);
+                setLoading(false)
               }
             }
             setPosts(data.results);
