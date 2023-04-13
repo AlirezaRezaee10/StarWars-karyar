@@ -26,7 +26,7 @@ export default function Pagination({ postsPerPage, totalPosts, paginate, current
             <ul className="pagination">
                 {currentPage > 1 ?
                     <li className="page-item" onClick={() => prevPage(currentPage)}>
-                        <Link to={`/${prev}`} className="page-link">{"\uFF1C"}</Link>
+                        <Link to={`/${prev}`} className="page-link">{"<"}</Link>
                     </li>
                     : ""}
                 {pageNumbers.map(num => (
