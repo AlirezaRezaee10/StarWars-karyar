@@ -2,7 +2,7 @@ import { Link } from "react-router-dom"
 import CollapseButton from "../components/CollapseButton"
 import Modall from "../components/Modal"
 
-export function renderPosts(data, loading, error, peopleId) {
+export function renderPosts(data, loading, error, peopleId, errMessage) {
     data.id = peopleId
     if (loading) {
         return (
@@ -16,7 +16,7 @@ export function renderPosts(data, loading, error, peopleId) {
     if (error) {
         return (
             <div>
-                <p>ERROR...!!!</p>
+                <p>{errMessage}</p>
             </div>
         )
     }

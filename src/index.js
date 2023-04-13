@@ -1,19 +1,21 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import App from './components/App';
 import reportWebVitals from './reportWebVitals';
-import { BrowserRouter as Router } from 'react-router-dom';
 
 import './index.css';
 import './style/style.css'
 import 'bootstrap/dist/css/bootstrap.css'
 import './style/reset.css'
 import SiteRoutes from './config';
+import Header from './components/Header';
+import Footer from './components/Footer';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
+      <Header />
       <SiteRoutes />
+      <Footer />
   </React.StrictMode>
 );
 

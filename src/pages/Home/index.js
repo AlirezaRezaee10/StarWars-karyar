@@ -19,6 +19,7 @@ export default function Home() {
     const [posts, setPosts] = useState([])
     const [loading, setLoading] = useState(true)
     const [hasError, setHasError] = useState(false)
+    const [errMessage, setErrMessage] = useState('')
     const [postsCount, setPostsCount] = useState(2)
     const [peopleId, setPeopleId] = useState(0)
 
@@ -32,6 +33,7 @@ export default function Home() {
                 data = response.data;
                 saveData(currentPage, data);
               } catch (err) {
+                setErrMessage(err.response.status + ' ' + err.response.statusText)
                 setHasError(true);
                 setLoading(false)
               }
@@ -60,7 +62,7 @@ export default function Home() {
     return (
         <div className='text-center'>
             <div className='home-items p-3 w-100 row justify-content-center'>
-                {renderPosts(posts, loading, hasError, peopleId)}
+                {renderPosts(posts, loading, hasError, peopleId, errMessage)}
             </div>
             <Pagination
                 postsPerPage={10}
